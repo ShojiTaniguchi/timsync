@@ -83,7 +83,7 @@ timixRev <- function(prm, dat, y, f, r, grp) {
   return(-1 * res$loglik)
 }
 
-#' Mixed model for the synchronized time sereis by estimating covariance parameters.
+#' Mixed model for the synchronized time sereis by optimization.
 #'
 #' @description
 #' timixCov function is a mixed model function to solve synchronized time sereis.
@@ -109,11 +109,70 @@ timixRev <- function(prm, dat, y, f, r, grp) {
 #'
 #' @export
 
-timixCov <- function(dat, y, f, r, grp){
+timixCov <- function(dat, y, f, r, grp, trace = 0){
   opt <- try(nlminb(start = c(0, 0), timixRev,
                     dat = dat, y = y, f = f, r = r, grp = grp,
-                    lower = c(0, 0), upper = c(1, 1)))
+                    lower = c(0, 0), upper = c(1, 1),
+                    control = list(trace = trace)))
   rho = opt$par[1]; omega = opt$par[2]
   res <- timix(rho, omega, dat, y, f, r, grp)
   return(list(res, opt))
+}
+
+#' Mixed model for the synchronized time sereis by grid-search and optimization.
+#'
+#' @description
+#' timixGrd function is a mixed model function to solve synchronized time sereis.
+#' The effects of synchronization and serial correlation are treated as the random effects.
+#' The variance-covariance matrix of random effects are prescribed by the parameters rho and omega.
+#' timixGrd function estimate these two parameters through grid-search and oprimization.
+#'
+#' @param dat data for the analysis
+#' @param y column number of the dependent variable
+#' @param f column number of the fixed effects
+#' @param r column number of the random effects
+#' @param grp column number of the group
+#' @examples
+#' n_time <- 50
+#' n_grp <- 5
+#' y <- simuOneCol(n_time, n_grp, rho = 0.5, omega = 0.5, mean = 0)
+#' x0 <- rep(1, n_time * n_grp) # Intercept
+#' x1 <- simuOneCol(n_time, n_grp, rho = 0.5, omega = 1, mean = 0)
+#' x2 <- simuOneCol(n_time, n_grp, rho = 0.5, omega = 0, mean = 0)
+#' area <- makeGrp(n_time, n_grp)
+#' dat <- data.frame(y, x0, x1, x2, area)
+#' res <- timixGrd(dat, y = 1, f = 2:4, r = 2:4, grp = 5)
+#'
+#' @export
+
+timixGrd <- function(dat, y, f, r, grp, trace = 0){
+  prm <- gridprm(rho_vc = seq(0, 1, 0.2), omega_vc = seq(0, 1, 0.2),
+                 dat = dat, y = y, f = f, r = r, grp = grp)
+  if(trace != 0){print(paste("rho=", prm[1], "omega =", prm[2]))}
+  opt <- try(nlminb(start = prm, timixRev,
+                    dat = dat, y = y, f = f, r = r, grp = grp,
+                    lower = c(0, 0), upper = c(1, 1),
+                    control = list(trace = trace)))
+  rho = opt$par[1]; omega = opt$par[2]
+  res <- timix(rho, omega, dat, y, f, r, grp)
+  return(list(res, opt))
+}
+
+#' Grid search of rho and omega
+#' @description
+#' This function conduct the grid search for selecting the best parameter set of rho and omega
+#' @param rho_ve vector of the parameter rho
+#' @param omega_ve vector of the parameter omega
+
+gridprm <- function(rho_vc, omega_vc, dat, y, f, r, grp) {
+  prm_mt <- expand.grid(rho_vc, omega_vc)
+  lik_vc <- numeric(nrow(prm_mt))
+  g_elm <- 1
+  for(i in 1:nrow(prm_mt)) {
+    lik_vc[g_elm] <- timixRev(prm = c(prm_mt[g_elm, 1], prm_mt[g_elm, 2]),
+                              dat, y, f, r, grp)
+    g_elm <- g_elm + 1
+  }
+  prm <- c(prm_mt[which.min(lik_vc), 1], prm_mt[which.min(lik_vc), 2])
+  return(prm)
 }
