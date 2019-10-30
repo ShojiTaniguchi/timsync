@@ -76,6 +76,7 @@ timix <- function(rho, omega, dat, y, f, r, grp) {
 #' obtain negative log likelihood of timix function for optimization process
 #' @param prm prm[1] is rho and prm[2] is omega.
 #' This notification is for oprimization process
+#' @export
 
 timixRev <- function(prm, dat, y, f, r, grp) {
   res <- timix(rho = prm[1], omega = prm[2], dat = dat,
