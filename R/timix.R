@@ -111,10 +111,10 @@ timixRev <- function(prm, dat, y, f, r, grp) {
 #' @export
 
 timixCov <- function(dat, y, f, r, grp, trace = 0){
-  opt <- try(nlminb(start = c(0, 0), timixRev,
-                    dat = dat, y = y, f = f, r = r, grp = grp,
-                    lower = c(0, 0), upper = c(1, 1),
-                    control = list(trace = trace)))
+  opt <- nlminb(start = c(0, 0), timixRev,
+                dat = dat, y = y, f = f, r = r, grp = grp,
+                lower = c(0, 0), upper = c(1 - 1e-6, 1 - 1e-6),
+                control = list(trace = trace))
   rho = opt$par[1]; omega = opt$par[2]
   res <- timix(rho, omega, dat, y, f, r, grp)
   return(list(res, opt))
@@ -147,13 +147,13 @@ timixCov <- function(dat, y, f, r, grp, trace = 0){
 #' @export
 
 timixGrd <- function(dat, y, f, r, grp, trace = 0){
-  prm <- gridprm(rho_vc = seq(0, 1, 0.2), omega_vc = seq(0, 1, 0.2),
+  prm <- gridprm(rho_vc = seq(0.1, 0.9, 0.2), omega_vc = seq(0.1, 0.9, 0.2),
                  dat = dat, y = y, f = f, r = r, grp = grp)
   if(trace != 0){print(paste("rho=", prm[1], "omega =", prm[2]))}
-  opt <- try(nlminb(start = prm, timixRev,
-                    dat = dat, y = y, f = f, r = r, grp = grp,
-                    lower = c(0, 0), upper = c(1, 1),
-                    control = list(trace = trace)))
+  opt <- nlminb(start = prm, timixRev,
+                dat = dat, y = y, f = f, r = r, grp = grp,
+                lower = c(0, 0), upper = c(1 - 1e-6, 1 - 1e-6),
+                control = list(trace = trace))
   rho = opt$par[1]; omega = opt$par[2]
   res <- timix(rho, omega, dat, y, f, r, grp)
   return(list(res, opt))
