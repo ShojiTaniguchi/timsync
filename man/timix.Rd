@@ -4,7 +4,7 @@
 \alias{timix}
 \title{Mixed model for the synchronized time sereis with given covariance parameters.}
 \usage{
-timix(rho, omega, dat, y, f, r, grp)
+timix(rho, omega, dat, y, f, r, grp, ftest = F)
 }
 \arguments{
 \item{rho}{parameter for serial correlation}

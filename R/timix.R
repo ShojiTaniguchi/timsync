@@ -27,7 +27,7 @@
 #' timix(rho = 0.5, omega = 0.5, dat, y = 1, f = 2:4, r = 2:4, grp = 5)
 #' @export
 
-timix <- function(rho, omega, dat, y, f, r, grp) {
+timix <- function(rho, omega, dat, y, f, r, grp, ftest = F) {
 
   # number of groups and time points
   n_group <- nlevels(dat[, grp])
@@ -70,6 +70,23 @@ timix <- function(rho, omega, dat, y, f, r, grp) {
   # fit model
   res <- tsEMMREMLMultiKernel(y = dat[, y], X = X, Zlist = Z_list, Klist = K_list,
                                      varbetahat = T, varuhat = T, test = T)
+
+  # F-test
+  if(ftest == T) {
+    n <- nrow(dat)
+    p <- ncol(X)
+    V <- diag(n) * res$Ve
+    for(i in 1:length(Z_list)){
+      V <- V + Z_list[[i]] %*% K_list[[i]] %*% t(Z_list[[i]]) *
+        res$Vu * res$weights[i]
+    }
+    sigma_sq <- (t(dat[, y] - X %*% res$betahat) %*% solve(V) %*%
+                   (dat[, y] - X %*% res$betahat)) / (n - p)
+    p_vec <- testFixed(X, y, res$betahat, sigma_sq, V, n, p)
+
+    # return results
+    res <- c(res, p_vec = list(p_vec))
+  }
   return(res)
 }
 
@@ -110,13 +127,22 @@ timixRev <- function(prm, dat, y, f, r, grp) {
 #'
 #' @export
 
-timixCov <- function(dat, y, f, r, grp, trace = 0){
-  opt <- nlminb(start = c(0, 0), timixRev,
+timixCov <- function(dat, y, f, r, grp, grid = T, trace = F){
+  if(grid == T){
+    prm <- gridprm(rho_vc = seq(0.1, 0.9, 0.2), omega_vc = seq(0.1, 0.9, 0.2),
+                   dat = dat, y = y, f = f, r = r, grp = grp)
+  }else{
+    prm <- c(0, 0)
+  }
+  if(trace == T){
+    print(paste("rho=", prm[1], "omega =", prm[2]))
+  }
+  opt <- nlminb(start = prm, timixRev,
                 dat = dat, y = y, f = f, r = r, grp = grp,
                 lower = c(0, 0), upper = c(1 - 1e-6, 1 - 1e-6),
                 control = list(trace = trace))
   rho = opt$par[1]; omega = opt$par[2]
-  res <- timix(rho, omega, dat, y, f, r, grp)
+  res <- timix(rho, omega, dat, y, f, r, grp, ftest = T)
   return(list(res, opt))
 }
 
@@ -144,7 +170,6 @@ timixCov <- function(dat, y, f, r, grp, trace = 0){
 #' dat <- data.frame(y, x0, x1, x2, area)
 #' res <- timixGrd(dat, y = 1, f = 2:4, r = 2:4, grp = 5)
 #'
-#' @export
 
 timixGrd <- function(dat, y, f, r, grp, trace = 0){
   prm <- gridprm(rho_vc = seq(0.1, 0.9, 0.2), omega_vc = seq(0.1, 0.9, 0.2),
@@ -155,7 +180,7 @@ timixGrd <- function(dat, y, f, r, grp, trace = 0){
                 lower = c(0, 0), upper = c(1 - 1e-6, 1 - 1e-6),
                 control = list(trace = trace))
   rho = opt$par[1]; omega = opt$par[2]
-  res <- timix(rho, omega, dat, y, f, r, grp)
+  res <- timix(rho, omega, dat, y, f, r, grp, ftest = T)
   return(list(res, opt))
 }
 

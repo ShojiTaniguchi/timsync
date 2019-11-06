@@ -4,7 +4,7 @@
 \alias{timixCov}
 \title{Mixed model for the synchronized time sereis by optimization.}
 \usage{
-timixCov(dat, y, f, r, grp, trace = 0)
+timixCov(dat, y, f, r, grp, grid = T, trace = F)
 }
 \arguments{
 \item{dat}{data for the analysis}

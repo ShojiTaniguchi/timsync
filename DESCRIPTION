@@ -1,7 +1,7 @@
 Package: timsync
 Type: Package
 Title: Mixed model for time series with synchronization
-Version: 0.1.1
+Version: 0.2.0
 Author: Shoji Taniguchi, Hiroshi Hakoyama
 Maintainer: Shoji Taniguchi <shoji-taniguchi@nagano.ac.jp>
 Description: More about what it does (maybe more than one line)
