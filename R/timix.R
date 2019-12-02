@@ -139,7 +139,7 @@ timixCov <- function(dat, y, f, r, grp, grid = T, trace = F){
   }
   opt <- nlminb(start = prm, timixRev,
                 dat = dat, y = y, f = f, r = r, grp = grp,
-                lower = c(0, 0), upper = c(1 - 1e-6, 1 - 1e-6),
+                lower = c(0, 0), upper = c(1 - 1e-5, 1 - 1e-5),
                 control = list(trace = trace))
   rho = opt$par[1]; omega = opt$par[2]
   res <- timix(rho, omega, dat, y, f, r, grp, ftest = T)
