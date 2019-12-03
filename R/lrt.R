@@ -34,7 +34,7 @@ timixCovRho <- function(dat, y, f, r, grp, grid = T, trace = F){
   if(trace == T){
     print(paste("rho=", prm[1], "omega =", prm[2]))
   }
-  opt <- nlminb(start = prm, timixRevRho,
+  opt <- nlminb(start = prm[1], timixRevRho,
                 dat = dat, y = y, f = f, r = r, grp = grp,
                 lower = 0, upper = 1 - 1e-5,
                 control = list(trace = trace))
@@ -49,7 +49,7 @@ timixCovRho <- function(dat, y, f, r, grp, grid = T, trace = F){
 #' @export
 
 timixRevRho <- function(prm, dat, y, f, r, grp) {
-  res <- timix(rho = prm[1], omega = 0, dat = dat,
+  res <- timix(rho = prm, omega = 0, dat = dat,
                y = y, f = f, r = r, grp = grp)
   return(-1 * res$loglik)
 }
