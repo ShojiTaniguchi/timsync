@@ -4,7 +4,7 @@
 \alias{makeRandNum}
 \title{Make random numbers with synchronization}
 \usage{
-makeRandNum(mean, Sig)
+makeRandNum(rndVar, mean, sd, Sig)
 }
 \arguments{
 \item{mean}{Mean of the random numbers}

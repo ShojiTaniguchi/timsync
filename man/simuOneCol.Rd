@@ -4,7 +4,7 @@
 \alias{simuOneCol}
 \title{Function to generate data of one column}
 \usage{
-simuOneCol(n_time, n_grp, rho, omega, mean = 0)
+simuOneCol(n_time, n_grp, rho, omega, rndVar = F, mean = 0, sd = 0)
 }
 \arguments{
 \item{n_time}{Length of the time series}
@@ -14,6 +14,15 @@ simuOneCol(n_time, n_grp, rho, omega, mean = 0)
 \item{rho}{Parameter of serial correlation}
 
 \item{omega}{Parameter of synchronization}
+
+\item{rndVar}{Set random numbers for the each group mean.
+Default is FALSE}
+
+\item{mean}{mean value (hyper parameter) in the distribution of the group mean.
+Default is 0}
+
+\item{sd}{sd value (hyper parameter) in the distribution of the group mean.
+Default is 0}
 }
 \description{
 Function to generate data of one column
@@ -22,11 +31,12 @@ Function to generate data of one column
 n_time <- 100
 n_grp <- 5
 
-y <- simuOneCol(n_time, n_area, rho = 0.5, omega = 0.5, mean = 0)
-x0 <- rep(1, n_time * n_area) # Intercept
-x1 <- simuOneCol(n_time, n_area, rho = 0.5, omega = 1, mean = 0)
-x2 <- simuOneCol(n_time, n_area, rho = 0.5, omega = 0, mean = 0)
-area <- makeGrp(n_time, n_area)
+y <- simuOneCol(n_time, n_area, rho = 0.5, omega = 0.5,
+ rndVar = T, mean = 0, sd = 1)
+x0 <- rep(1, n_time * n_grp) # Intercept
+x1 <- simuOneCol(n_time, n_grp, rho = 0.5, omega = 1)
+x2 <- simuOneCol(n_time, n_grp, rho = 0.5, omega = 0)
+area <- makeGrp(n_time, n_grp)
 
 dat <- data.frame(y, x0, x1, x2, area)
 
