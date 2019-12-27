@@ -48,7 +48,7 @@ timix <- function(rho, omega, dat, y, f, r, grp, ftest = F) {
       if (i != j) { Omega[i, j] <- omega }
     }
   }
-  Omeaga_0 <- Omega %x% R
+  Omega_0 <- Omega %x% R
 
   # make design matrix: X
   X <- dat[, f]
@@ -64,7 +64,7 @@ timix <- function(rho, omega, dat, y, f, r, grp, ftest = F) {
   # make variance-covariance matrix
   K_list <- NULL
   for(i in r){
-    K_list <- c(K_list, list(Omeaga_0))
+    K_list <- c(K_list, list(Omega_0))
   }
 
   # fit model
