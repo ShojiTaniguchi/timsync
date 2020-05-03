@@ -4,8 +4,7 @@
 \alias{genDat}
 \title{Function to generate data}
 \usage{
-genDat(x, beta, n_time, n_grp, z = NULL, OmegaMat = NULL, sig = 1,
-  rho, omega)
+genDat(x, beta, n_time, n_grp, z = NULL, OmegaMat = NULL, sig = 1, rho, omega)
 }
 \arguments{
 \item{x}{Independent variable. Vector or matrix.}

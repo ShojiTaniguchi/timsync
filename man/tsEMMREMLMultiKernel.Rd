@@ -4,8 +4,16 @@
 \alias{tsEMMREMLMultiKernel}
 \title{Fit mixed model}
 \usage{
-tsEMMREMLMultiKernel(y, X, Zlist, Klist, varbetahat = TRUE,
-  varuhat = TRUE, PEVuhat = FALSE, test = TRUE)
+tsEMMREMLMultiKernel(
+  y,
+  X,
+  Zlist,
+  Klist,
+  varbetahat = TRUE,
+  varuhat = TRUE,
+  PEVuhat = FALSE,
+  test = TRUE
+)
 }
 \arguments{
 \item{y}{n x 1 vector of explained variable}
