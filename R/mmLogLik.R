@@ -21,6 +21,7 @@
 #' Hamazaki, K., & Iwata, H. (2020).
 #' RAINBOW: Haplotype-based genome-wide association study
 #'  using a novel SNP-set method. PLoS computational biology, 16(2), e1007663.
+#' @export
 
 # mmLogLik <- function(y, X, b, Zlist, Klist, w, Ve, Vu, method = "ML"){
 mmLogLik <- function(rho, omega, dat, y, f, r, grp, w, b, Ve, Vu, method){
