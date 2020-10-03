@@ -19,5 +19,5 @@ testFixed <- function(X, y, beta, sigma_sq, V, n, p) {
     f_vec[i] <- fval
     p_vec[i] <- pf(fval, 1, n - p, lower.tail = F)
   }
-  return(list(p_vec, f_vec, df = n - p))
+  return(list(p_vec = p_vec, f_vec = f_vec, df = n - p))
 }
