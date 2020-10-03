@@ -82,10 +82,12 @@ timix <- function(rho, omega, dat, y, f, r, grp, ftest = F) {
     }
     sigma_sq <- (t(dat[, y] - X %*% res$betahat) %*% solve(V) %*%
                    (dat[, y] - X %*% res$betahat)) / (n - p)
-    p_vec <- testFixed(X, y, res$betahat, sigma_sq, V, n, p)
+    ftest_rslt <- testFixed(X, y, res$betahat, sigma_sq, V, n, p)
 
     # return results
-    res <- c(res, p_vec = list(p_vec))
+    res <- c(res, p_vec = list(ftest_rslt$p_vec),
+             f_vec = list(ftest_rslt$f_vec),
+             df_ftest = list(ftest_rslt$df))
   }
   return(res)
 }
