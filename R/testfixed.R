@@ -9,13 +9,15 @@
 
 testFixed <- function(X, y, beta, sigma_sq, V, n, p) {
   p_vec <- numeric(p)
+  f_vec <- numeric(p)
   for(i in 1:p){
     H <- matrix(0, nrow = p, ncol = 1)
     H[i, 1] <- 1
     fval <- t(t(H) %*% beta) %*%
       solve(t(H) %*% solve(t(X) %*% solve(V) %*% X) %*% H) %*%
       t(H) %*% beta / sigma_sq
+    f_vec[i] <- fval
     p_vec[i] <- pf(fval, 1, n - p, lower.tail = F)
   }
-  return(p_vec)
+  return(list(p_vec, f_vec, df = n - p))
 }
