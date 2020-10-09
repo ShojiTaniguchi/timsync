@@ -142,7 +142,7 @@ timixCov <- function(dat, y, f, r, rho = NA, omega = NA, grp, grid = T, trace = 
     }
     opt <- nlminb(start = prm, timixRev,
                   dat = dat, y = y, f = f, r = r, grp = grp,
-                  lower = c(0, 0), upper = c(1 - 1e-5, 1 - 1e-5),
+                  lower = c(-1 + 1e-5, -1 + 1e-5), upper = c(1 - 1e-5, 1 - 1e-5),
                   control = list(trace = trace))
     rho = opt$par[1]; omega = opt$par[2]
   }else if(!is.na(rho) && !is.na(omega)){
@@ -159,7 +159,7 @@ timixCov <- function(dat, y, f, r, rho = NA, omega = NA, grp, grid = T, trace = 
     }
     opt <- nlminb(start = prm, timixRev,
                   dat = dat, y = y, f = f, r = r, grp = grp,
-                  lower = c(0, omega), upper = c(1 - 1e-5, omega),
+                  lower = c(-1 + 1e-5, omega), upper = c(1 - 1e-5, omega),
                   control = list(trace = trace))
     rho = opt$par[1]
   }else{
@@ -174,7 +174,7 @@ timixCov <- function(dat, y, f, r, rho = NA, omega = NA, grp, grid = T, trace = 
     }
     opt <- nlminb(start = prm, timixRev,
                   dat = dat, y = y, f = f, r = r, grp = grp,
-                  lower = c(rho, 0), upper = c(rho, 1 - 1e-5),
+                  lower = c(rho, -1 + 1e-5), upper = c(rho, 1 - 1e-5),
                   control = list(trace = trace))
     omega = opt$par[2]
   }
